@@ -6,6 +6,12 @@ name = "pypi"
 [packages]
 gunicorn = "*"
 django = "*"
+plotly = "*"
+numpy = "*"
+django-bootstrap5 = "*"
+django-debug-toolbar = "*"
+pandas = "*"
+django-pandas = "*"
 
 [dev-packages]
 
