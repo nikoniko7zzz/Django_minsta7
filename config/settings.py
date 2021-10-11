@@ -193,3 +193,5 @@ if DEBUG:
 # (kuucham.pythonanywhere.com)$ python manage.py collectstatic
 
 # pa_autoconfigure_django.py --python=3.8 https://github.com/nikoniko7zzz/Django_minsta.git --nuke
+
+pa_autoconfigure_django.py - -python = 3.9 https: // github.com/nikoniko7zzz/Django_minsta7.git - -nuke
