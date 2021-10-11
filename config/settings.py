@@ -15,7 +15,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 import os
-import sys #bootstrao用
+import sys  # bootstrao用
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -193,4 +193,3 @@ if DEBUG:
 # (kuucham.pythonanywhere.com)$ python manage.py collectstatic
 
 # pa_autoconfigure_django.py --python=3.8 https://github.com/nikoniko7zzz/Django_minsta.git --nuke
-
