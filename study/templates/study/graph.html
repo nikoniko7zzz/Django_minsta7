@@ -1,0 +1,17 @@
+{% extends 'study/base.html' %}
+{% load django_bootstrap5 %}
+
+
+
+
+{% block content %}
+
+<!-- ここにグラフが入る -->
+{% autoescape off %}
+{{ graph_heatmap }}
+{{ graph_line }}
+
+<!-- HTMLコードの文字列が格納されたコンテキスト -->
+{% endautoescape %}
+
+{% endblock %}
