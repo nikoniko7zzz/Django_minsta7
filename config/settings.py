@@ -14,6 +14,9 @@ from pathlib import Path
 from django.contrib import admin
 from django.urls import path, include
 
+from pathlib import Path  # add heroku
+import dj_database_url  # add heroku
+
 import os
 import sys  # bootstrao用
 
@@ -25,13 +28,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-fjj!29uml7e+w6@mx9d+g&%s_4qs(@a&b2=d3swc!gscjm2+#a'
+# SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# DEBUG = False
+# DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com']
+# ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com']
+ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
 # ALLOWED_HOSTS = ['*']
 # Application definition
 
@@ -45,9 +49,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_bootstrap5',
     'register.apps.RegisterConfig',
     'study.apps.StudyConfig',
+    'django_bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -58,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # add heroku
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -91,12 +96,27 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# pythonanywhere用///////////////////////////////////////
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+# pythonanywhere用///////////////////////////////////////
+
+# heroku用///////////////////////////////////////
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'Django_minsta',
+        'USER': 'matsuo',
+        'PASSWORD': '',
+        'HOST': 'host',
+        'PORT': '',
     }
 }
+# heroku用///////////////////////////////////////
 
 
 # Password validation
@@ -136,12 +156,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-# STATICFILES_DIRS = (
-#     [
-#         os.path.join(BASE_DIR, "static"),
-#     ]
-# )
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static') #pythonanywhere用
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # heroku用
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+)
 
 
 # Default primary key field type
@@ -157,20 +177,36 @@ LOGOUT_REDIRECT_URL = 'register:top'
 # メールをコンソールに表示する
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-if DEBUG:
-    def show_toolbar(request):
-        return True
+# heroku用//////////////
+try:
+    from .local_settings import *
+except ImportError:
+    pass
 
-    INSTALLED_APPS += (
-        'debug_toolbar',
-    )
-    MIDDLEWARE += (
-        'debug_toolbar.middleware.DebugToolbarMiddleware',
-    )
-    # ここで表示する内容を設定できます↓↓基本的にはこれでok
-    DEBUG_TOOLBAR_CONFIG = {
-        'SHOW_TOOLBAR_CALLBACK': show_toolbar,
-    }
+if not DEBUG:
+    SECRET_KEY = os.environ['SECRET_KEY']
+    import django_heroku
+    django_heroku.settings(locals())
+
+db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
+DATABASES['default'].update(db_from_env)
+# heroku用//////////////
+
+
+# if DEBUG:
+#     def show_toolbar(request):
+#         return True
+
+#     INSTALLED_APPS += (
+#         'debug_toolbar',
+#     )
+#     MIDDLEWARE += (
+#         'debug_toolbar.middleware.DebugToolbarMiddleware',
+#     )
+#     # ここで表示する内容を設定できます↓↓基本的にはこれでok
+#     DEBUG_TOOLBAR_CONFIG = {
+#         'SHOW_TOOLBAR_CALLBACK': show_toolbar,
+#     }
 
 
 #
